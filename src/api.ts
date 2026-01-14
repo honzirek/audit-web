@@ -1,6 +1,6 @@
 import type { PaginatedDto, AuditOverviewDto, PaginationQueryDto } from './types';
 
-const API_URL = 'http://localhost:3000';
+const API_URL = '/api';
 
 export async function getAuditLogs(params: PaginationQueryDto): Promise<PaginatedDto<AuditOverviewDto>> {
   const queryParams = new URLSearchParams();
