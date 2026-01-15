@@ -26,7 +26,7 @@ export const AuditTable = ({ onViewDetail, onRowSelected, selectedId }: AuditTab
   //Manage MRT state that we need to pass to the API
   const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
-  const [sorting, setSorting] = useState<MRT_SortingState>([]);
+  const [sorting, setSorting] = useState<MRT_SortingState>([{ id: 'startedAt', desc: true }]);
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
     pageSize: 10,
