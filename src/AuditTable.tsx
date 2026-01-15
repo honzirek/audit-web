@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { DateTimePicker, type DateValue } from '@mantine/dates';
 import {
   MantineReactTable,
@@ -27,10 +28,26 @@ export const AuditTable = ({ onViewDetail, onRowSelected, selectedId }: AuditTab
   const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
   const [sorting, setSorting] = useState<MRT_SortingState>([{ id: 'startedAt', desc: true }]);
-  const [pagination, setPagination] = useState<MRT_PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  });
+  
+  const [searchParams, setSearchParams] = useSearchParams();
+  const page = parseInt(searchParams.get('page') || '1', 10);
+  const pageSize = parseInt(searchParams.get('limit') || '10', 10);
+
+  const pagination: MRT_PaginationState = {
+    pageIndex: page - 1,
+    pageSize,
+  };
+
+  const setPagination = (updaterOrValue: any) => {
+    const newPagination = typeof updaterOrValue === 'function' ? updaterOrValue(pagination) : updaterOrValue;
+    
+    setSearchParams((prev: URLSearchParams) => {
+        const newParams = new URLSearchParams(prev);
+        newParams.set('page', (newPagination.pageIndex + 1).toString());
+        newParams.set('limit', newPagination.pageSize.toString());
+        return newParams;
+    });
+  };
 
   //call our custom react-query hook
   const { data, isError, isFetching, isLoading } = useQuery({
