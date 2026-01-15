@@ -170,7 +170,7 @@ export const AuditTable = ({ onSelect, selectedId }: AuditTableProps) => {
         onDoubleClick: () => onSelect(row.original.id),
         style: {
             cursor: 'pointer',
-            backgroundColor: selectedId === row.original.id ? 'var(--mantine-color-blue-light)' : undefined,
+            backgroundColor: selectedId === row.original.id ? 'var(--mantine-color-blue-1)' : undefined,
         }
     }),
   });
