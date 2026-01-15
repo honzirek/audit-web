@@ -7,6 +7,24 @@ export interface AuditOverviewDto {
   summary: string;
 }
 
+export interface RetryAttemptDto {
+  attemptNo: number;
+  startedAt: number;
+  endedAt: number;
+  durationMs: number;
+  statusCode: number;
+  outcome: string;
+  errorMessage: string;
+  phase: string;
+}
+
+export interface AuditDetailDto extends AuditOverviewDto {
+  totalDurationMs: number;
+  totalAttempts: number;
+  metadata: Record<string, string>;
+  attempts: RetryAttemptDto[];
+}
+
 export enum SortOrder {
   ASC = 'asc',
   DESC = 'desc',

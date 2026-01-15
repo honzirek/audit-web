@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { DateTimePicker, type DateValue } from '@mantine/dates';
 import {
   MantineReactTable,
   useMantineReactTable,
@@ -12,8 +13,15 @@ import { useQuery } from '@tanstack/react-query';
 import { getAuditLogs } from './api';
 import { type AuditOverviewDto, SortOrder } from './types';
 import { format } from 'date-fns';
+import { ActionIcon } from '@mantine/core';
+import { IconEye } from '@tabler/icons-react';
 
-export const AuditTable = () => {
+interface AuditTableProps {
+  onSelect: (id: string) => void;
+  selectedId: string | null;
+}
+
+export const AuditTable = ({ onSelect, selectedId }: AuditTableProps) => {
   //Manage MRT state that we need to pass to the API
   const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
@@ -51,6 +59,8 @@ export const AuditTable = () => {
         sortOrder: sortOrder,
         action: filters['action'],
         status: filters['status'],
+        startedAt: filters['startedAt'] ? Number(filters['startedAt']) : undefined,
+        finishedAt: filters['finishedAt'] ? Number(filters['finishedAt']) : undefined,
       });
     },
   });
@@ -58,9 +68,25 @@ export const AuditTable = () => {
   const columns = useMemo<MRT_ColumnDef<AuditOverviewDto>[]>(
     () => [
       {
+        id: 'actions',
+        header: 'Actions',
+        enableSorting: false,
+        enableColumnFilter: false,
+        size: 50,
+        Cell: ({ row }) => (
+          <ActionIcon onClick={(e) => {
+             e.stopPropagation();
+             onSelect(row.original.id);
+          }}>
+            <IconEye size={16} />
+          </ActionIcon>
+        ),
+      },
+      {
         accessorKey: 'id',
         header: 'ID',
         enableSorting: false,
+        enableColumnFilter: false,
       },
       {
         accessorKey: 'action',
@@ -78,18 +104,39 @@ export const AuditTable = () => {
       {
         accessorKey: 'startedAt',
         header: 'Started At',
-        Cell: ({ cell }: { cell: MRT_Cell<AuditOverviewDto> }) => format(new Date(cell.getValue<number>()), 'PPpp'),
+        Filter: ({ column }) => (
+          <DateTimePicker
+            onChange={(date: DateValue) => {
+              column.setFilterValue(date ? date.getTime() : undefined);
+            }}
+            value={column.getFilterValue() ? new Date(column.getFilterValue() as number) : null}
+            placeholder="Filter by Started At"
+            clearable
+          />
+        ),
+        Cell: ({ cell }: { cell: MRT_Cell<AuditOverviewDto> }) =>
+          format(new Date(cell.getValue<number>()), 'PPpp'),
       },
       {
         accessorKey: 'finishedAt',
         header: 'Finished At',
+        Filter: ({ column }) => (
+          <DateTimePicker
+            onChange={(date: DateValue) => {
+              column.setFilterValue(date ? date.getTime() : undefined);
+            }}
+            value={column.getFilterValue() ? new Date(column.getFilterValue() as number) : null}
+            placeholder="Filter by Finished At"
+            clearable
+          />
+        ),
         Cell: ({ cell }: { cell: MRT_Cell<AuditOverviewDto> }) => {
-            const val = cell.getValue<number>();
-            return val ? format(new Date(val), 'PPpp') : '-';
+          const val = cell.getValue<number>();
+          return val ? format(new Date(val), 'PPpp') : '-';
         },
       },
     ],
-    [],
+    [onSelect],
   );
 
   const table = useMantineReactTable({
@@ -119,6 +166,13 @@ export const AuditTable = () => {
       showProgressBars: isFetching,
       sorting,
     },
+    mantineTableBodyRowProps: ({ row }) => ({
+        onDoubleClick: () => onSelect(row.original.id),
+        style: {
+            cursor: 'pointer',
+            backgroundColor: selectedId === row.original.id ? 'var(--mantine-color-blue-light)' : undefined,
+        }
+    }),
   });
 
   return <MantineReactTable table={table} />;
