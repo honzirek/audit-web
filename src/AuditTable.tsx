@@ -17,11 +17,12 @@ import { ActionIcon } from '@mantine/core';
 import { IconEye } from '@tabler/icons-react';
 
 interface AuditTableProps {
-  onSelect: (id: string) => void;
+  onViewDetail: (id: string) => void;
+  onRowSelected: (id: string) => void;
   selectedId: string | null;
 }
 
-export const AuditTable = ({ onSelect, selectedId }: AuditTableProps) => {
+export const AuditTable = ({ onViewDetail, onRowSelected, selectedId }: AuditTableProps) => {
   //Manage MRT state that we need to pass to the API
   const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
@@ -76,7 +77,7 @@ export const AuditTable = ({ onSelect, selectedId }: AuditTableProps) => {
         Cell: ({ row }) => (
           <ActionIcon onClick={(e) => {
              e.stopPropagation();
-             onSelect(row.original.id);
+             onViewDetail(row.original.id);
           }}>
             <IconEye size={16} />
           </ActionIcon>
@@ -136,7 +137,7 @@ export const AuditTable = ({ onSelect, selectedId }: AuditTableProps) => {
         },
       },
     ],
-    [onSelect],
+    [onViewDetail],
   );
 
   const table = useMantineReactTable({
@@ -167,11 +168,12 @@ export const AuditTable = ({ onSelect, selectedId }: AuditTableProps) => {
       sorting,
     },
     mantineTableBodyRowProps: ({ row }) => ({
-        onDoubleClick: () => onSelect(row.original.id),
+        onClick: () => onRowSelected(row.original.id),
+        onDoubleClick: () => onViewDetail(row.original.id),
         style: {
             cursor: 'pointer',
-            backgroundColor: selectedId === row.original.id ? 'var(--mantine-color-blue-1)' : undefined,
-        }
+            backgroundColor: selectedId === row.original.id ? 'var(--mantine-color-blue-light)' : undefined,
+        },
     }),
   });
 
