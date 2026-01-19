@@ -12,9 +12,16 @@
     "preview": "vite preview",
     "compile:electron": "tsc -p tsconfig.electron.json",
     "electron:dev": "concurrently -k \"cross-env BROWSER=none vite\" \"wait-on tcp:5173 && npm run compile:electron && electron .\"",
-    "electron:build": "vite build && npm run compile:electron && electron-builder --dir"
+    "electron:build": "vite build && npm run compile:electron && electron-builder --dir",
+    "cap:init": "cap init",
+    "cap:add:android": "cap add android",
+    "cap:sync": "cap sync",
+    "cap:open:android": "cap open android",
+    "android:build": "npm run build && npx cap sync android"
   },
   "devDependencies": {
+    "@capacitor/android": "^8.0.1",
+    "@capacitor/cli": "^8.0.1",
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.2",
@@ -27,6 +34,7 @@
     "wait-on": "^9.0.3"
   },
   "dependencies": {
+    "@capacitor/core": "^8.0.1",
     "@mantine/core": "^7.17.8",
     "@mantine/dates": "^7.17.8",
     "@mantine/hooks": "^7.17.8",

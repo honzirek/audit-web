@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">AuditWeb</string>
+    <string name="title_activity_main">AuditWeb</string>
+    <string name="package_name">com.deskbird.auditweb</string>
+    <string name="custom_url_scheme">com.deskbird.auditweb</string>
+</resources>
