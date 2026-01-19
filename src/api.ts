@@ -1,6 +1,6 @@
 import type { PaginatedDto, AuditOverviewDto, PaginationQueryDto, AuditDetailDto } from './types';
 
-const API_URL = '/api';
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 export async function getAuditLogs(params: PaginationQueryDto): Promise<PaginatedDto<AuditOverviewDto>> {
   const queryParams = new URLSearchParams();

@@ -3,17 +3,28 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "main": "dist-electron/main.js",
+  "author": "User",
+  "description": "Audit Web Desktop App",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "compile:electron": "tsc -p tsconfig.electron.json",
+    "electron:dev": "concurrently -k \"cross-env BROWSER=none vite\" \"wait-on tcp:5173 && npm run compile:electron && electron .\"",
+    "electron:build": "vite build && npm run compile:electron && electron-builder --dir"
   },
   "devDependencies": {
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.2",
+    "concurrently": "^9.2.1",
+    "cross-env": "^10.1.0",
+    "electron": "^40.0.0",
+    "electron-builder": "^26.4.0",
     "typescript": "~5.9.3",
-    "vite": "^7.2.4"
+    "vite": "^7.2.4",
+    "wait-on": "^9.0.3"
   },
   "dependencies": {
     "@mantine/core": "^7.17.8",
@@ -28,5 +39,19 @@
     "postcss-preset-mantine": "^1.18.0",
     "postcss-simple-vars": "^7.0.1",
     "react-router-dom": "^7.12.0"
+  },
+  "build": {
+    "appId": "com.deskbird.auditweb",
+    "productName": "AuditWeb",
+    "directories": {
+      "output": "dist-electron_build"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "files": [
+      "dist/**/*",
+      "dist-electron/**/*"
+    ]
   }
 }
